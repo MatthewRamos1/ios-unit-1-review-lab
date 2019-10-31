@@ -22,7 +22,7 @@ We hold these truths to be self-evident, that all men are created equal, that th
 their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit
 of Happiness. That to secure these rights, Governments are instituted among Men, deriving
 their just powers from the consent of the governed, That whenever any Form of Government
-becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to
+becomePlayground Playground Groups destructive of these ends, it is the Right of the People to alter or to abolish it, and to
 institute new Government, laying its foundation on such principles and organizing its powers in
 such form, as to them shall seem most likely to effect their Safety and Happiness. Prudence,
 indeed, will dictate that Governments long established should not be changed for light and
@@ -46,6 +46,20 @@ Make an array that contains all elements that appear more than twice in someRepe
 
 ```swift
 var someRepeatsAgain = [25,11,30,31,50,28,4,37,13,20,24,38,28,14,44,33,7,43,39,35,36,42,1,40,7,14,23,46,21,39,11,42,12,38,41,48,20,23,29,24,50,41,38,23,11,30,50,13,13,16,10,8,3,43,10,20,28,39,24,36,21,13,40,25,37,39,31,4,46,20,38,2,7,11,11,41,45,9,49,31,38,23,41,16,49,29,14,6,6,11,5,39,13,17,43,1,1,15,25]
+
+//Answer:
+var numberFreq: [Int:Int] = [:]
+var moreThanTwice: Set<Int> = []
+
+for num in someRepeatsAgain {
+    numberFreq[num] = (numberFreq[num] ?? 0) + 1
+    if (numberFreq[num] ?? 0) > 2 {
+        moreThanTwice.insert(num)
+    }
+}
+
+print(moreThanTwice)
+
 ```
 
 ## Question 3
@@ -54,6 +68,30 @@ Identify if there are 3 integers in the following array that sum to 10. If so, p
 
 ```swift
 var tripleSumArr = [-20,-14, -8,-5,-3,-2,1,2,3,4,9,15,20,30]
+
+var newArr: [[Int]] = []
+var newArr2: [[Int]] = []
+var arrSet: Set<[Int]> = []
+
+for index in 0...tripleSumArr.count - 1 {
+    for index1 in 0...tripleSumArr.count - 1 {
+        for index2 in 0...tripleSumArr.count - 1 {
+            if index != index1 && index != index2 && index1 != index2 {
+                if tripleSumArr[index] + tripleSumArr[index2] + tripleSumArr[index1] == 10 {
+                    newArr.append([tripleSumArr[index], tripleSumArr[index2], tripleSumArr[index1]])
+                }
+            }
+        
+    }
+}
+}
+for arr in newArr {
+    newArr2.append(arr.sorted())
+}
+for arr in newArr2 {
+    arrSet.insert(arr)
+}
+print(arrSet)
 ```
 
 
@@ -107,6 +145,27 @@ Given an Array of Arrays of Ints, write a function that returns the Array of Int
 Input: [[2,4,1],[3,0],[9,3]]
 
 Output: [9,3]
+
+//Answer 
+
+func largestSumArray (_ input: [[Int]]) -> [Int] {
+    var highestNumber = 0
+    var highestNumArray: [Int] = []
+    var sum = 0
+    for array in input {
+        for num in array {
+            sum += num
+            }
+        if sum > highestNumber {
+            highestNumber = sum
+            highestNumArray = array
+        }
+        sum = 0
+    }
+    return highestNumArray
+}
+
+
 ```
 
 ## Question 5
@@ -115,6 +174,14 @@ Output: [9,3]
 struct Receipt {
   let storeName: String
   let items: [ReceiptItem]
+  
+  func sumOfItems () -> Double {
+      var sum = 0.0
+      for item in items {
+          sum += item.price
+      }
+      return sum
+  }
 }
 
 struct ReceiptItem {
@@ -122,6 +189,7 @@ struct ReceiptItem {
   let price: Double
 }
 ```
+Answers in code above ^^^
 
 a. Given the structs above, add a method to `Receipt` that returns the total cost of all items
 
@@ -137,7 +205,7 @@ a. The code below doesn't compile.  Why?  Fix it so that it does compile.
 class Giant {
     var name: String
     var weight: Double
-    let homePlanet: String
+    var homePlanet: String
 
     init(name: String, weight: Double, homePlanet: String) {
         self.name = name
@@ -152,6 +220,7 @@ fred.name = "Brick"
 fred.weight = 999.2
 fred.homePlanet = "Mars"
 ```
+Answer: homePlanet is set as a let variable and is immutable 
 
 b. Using the Giant class. What will the value of `edgar.name` be after the code below runs? How about `jason.name`? Explain why.
 
@@ -159,7 +228,9 @@ b. Using the Giant class. What will the value of `edgar.name` be after the code 
 let edgar = Giant(name: "Edgar", weight: 520.0, homePlanet: "Earth")
 let jason = edgar
 jason.name = "Jason"
+
 ```
+Answer: Both will be valued as "Jason". The subclasses derived from each other are reference type, so changing one affects the other. When jason is changed so is edgar. 
 
 ## Question 7
 
@@ -167,20 +238,32 @@ jason.name = "Jason"
 struct BankAccount {
     var owner: String
     var balance: Double
+    let startingBalance : Double
+    var deposits: [Double]
+    var withdraws: [Double]
 
-    func deposit(_ amount: Double) {
+    mutating func deposit(_ amount: Double) {
         balance += amount
+        deposits.append(amount)
     }
 
-    func withdraw(_ amount: Double) {
+    mutating func withdraw(_ amount: Double) {
         balance -= amount
+        withdraws.append(amount)
     }
+    
+    func totalGrowth() -> Double {
+        return balance - startingBalance
+    }
+    
 }
 ```
 
 a. Explain why the code above doesn't compile, then fix it.
+Answer: The function edits the property in the actual struct, not just an instance, so a mutating function is required.
 
 b. Add a property called `deposits` of type `[Double]` that stores all of the deposits made to the bank account
+
 
 c. Add a property called `withdraws` of type `[Double]` that stores all of the withdraws made to the bank account
 
@@ -198,6 +281,8 @@ enum GameOfThronesHouse: String {
 
 a. Write a function that takes an instance of GameOfThronesHouse as input and, using a switch statement, returns the correct house words.
 
+b. Move that function to inside the enum as a method
+
 ```
 House Baratheon - Ours is the Fury
 
@@ -208,7 +293,29 @@ House Targaryen - Fire and Blood
 House Lannister - A Lannister always pays his debts
 ```
 
-b. Move that function to inside the enum as a method
+```swift
+
+//A and B:
+enum GameOfThronesHouse: String {
+    case stark, lannister, targaryen, baratheon
+    
+    func houseWords (_ input: GameOfThronesHouse) -> String {
+        switch input {
+        case .stark:
+          return "Winter is coming"
+        case .lannister:
+           return "A Lannister always pays his debts"
+        case .targaryen:
+           return "Fire and Blood"
+        case .baratheon:
+           return "Ours is the Fury"
+        }
+    }
+}
+
+
+```
+
 
 ## Question 9
 
@@ -230,9 +337,10 @@ class MusicLibrary {
 let library1 = MusicLibrary()
 library1.add(track: "Michelle")
 library1.add(track: "Voodoo Child")
-let library2 = library
+let library2 = library1
 library2.add(track: "Come As You Are")
 ```
+Answer: They both contain all 3 songs, due to being reference types and sharing those values as subclasses.
 
 ## Question 10
 
@@ -242,4 +350,30 @@ Make a function that takes in an array of strings and returns an array of string
 Input: ["Hello", "Alaska", "Dad", "Peace", "Power"]
 
 Output: ["Alaska", "Dad", "Power"]
+```
+
+```swift
+
+func oneLine (_ input: [String]) -> [String] {
+    var letterCounter = 0
+    let line1 = ["q","w","e","r","t","y","u","i","o","p"]
+    let line2 = ["a","s","d","f","g","h","j","k","l"]
+    let line3 = ["z","x","c","v","b","n","m"]
+    let lineArray = [line1, line2, line3]
+    var oneLineArray: [String] = []
+    for word in input {
+        for line in lineArray {
+            for letter in word {
+                if line.contains(String(letter).lowercased()) {
+                    letterCounter += 1
+                }
+                if letterCounter == word.count{
+                    oneLineArray.append(word)
+            }
+        }
+            letterCounter = 0
+}
+}
+    return oneLineArray
+}
 ```
